@@ -72,11 +72,13 @@ map:
     # The Address of the next node is an attribute of the current node.
     # Think about how structs are organized in memory.
     ### YOUR CODE HERE ###
-    addi a0, s0, 4 
+    lw a0, 4(s0) 
     
 
     # Put the address of the function back into a1 to prepare for the recursion
-    # THINK: why a1? What about a0?
+    # THINK: why a1? What about a0? 
+    # the a1 is address of square function.
+    # the a0 is head of the linked-list.
     ### YOUR CODE HERE ###
     mv a1, s1
 
