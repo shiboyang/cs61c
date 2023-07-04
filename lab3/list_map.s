@@ -31,7 +31,7 @@ main:
     jal ra, print_newline
 
     addi a0, x0, 10
-    ecall #Terminate the program
+    ecall #Terminate the programcreate_default_list
 
 map:
     # Prologue: Make space on the stack and back-up registers
@@ -41,7 +41,7 @@ map:
     sw ra, 0(sp) # store ra registor
     sw s0, 4(sp) # store s0 registor
     sw s1, 8(sp) # store s1 registor 
-    
+     
 
     beq a0, x0, done    # If we were given a null pointer (address 0), we're done.
 
@@ -84,7 +84,7 @@ map:
 
     # recurse
     ### YOUR CODE HERE ###
-    j map
+    jal ra, map
 
 done:
     # Epilogue: Restore register values and free space from the stack
@@ -92,11 +92,12 @@ done:
     lw ra, 0(sp)
     lw s0, 4(sp)
     lw s1, 8(sp)
+    addi sp, sp, 12
 
     jr ra # Return to caller
 
 square:
-    mul a0 ,a0, a0
+    mul a0 t0,a0, a0
     jr ra
 
 create_default_list:
