@@ -29,6 +29,7 @@ main:
     # Call relu function
     mv a0 s0
     mul a1 s1 s2 # Convert dimensions to total number of elements
+    li a1 -1
     jal ra relu
 
     # Print m0 after running relu

@@ -1,3 +1,6 @@
+# .import utils.s
+
+
 .globl relu
 
 .text
@@ -12,15 +15,14 @@
 # If the length of the vector is less than 1, 
 # this function exits with error code 8.
 # ==============================================================================
-/*
-a1--;
-if(a1 < 1) return 8;
-while(a1 >= 0){
-    if(*a0 < 0) *a0 = 0;
-    ++a0;
-    a1--;
-}
-*/
+# if(a1 < 1) exit(8);
+# while(a1 != 0){
+#     --a1;
+#     if(*a0 < 0) *a0 = 0;
+#     ++a0;
+#     a1--;
+# }
+
 
 relu:
     # Prologue
@@ -30,37 +32,42 @@ relu:
     sw s2, 8(sp) # sp[2] = s2
     sw ra, 12(sp)
 
-    mv s0, a0
-    mv s1, a2
-    li s2, -1
-    li t0, 1
+    mv s0, a0  # s0 = *arr
+    mv s1, a1  # s1 = length
+    li s2, 1   # s2 = 1
 
 
 loop_start:
-    addi s1, s1, -1
-    bge x0, s1, loop_continue # if x0 >= s1 then loop_continue    
-    addi a0, x0, 8 # exit with error code 8
+    bge s1, s2, loop_continue  # s1 >= 1
+    li a1, 8 # exit with error code 8
+    j exit2  # j loop_end ????
 
 loop_continue:
-    lw t1, 0(s0)
-    add a0, t1
-    j max
-    sw a0, 0(s0)
     addi s1, s1, -1
+    lw t0, 0(s0)
+    mv a0, t0
+    jal ra, max
+    sw a0, 0(s0)
     addi s0, s0, 4
-    beq s1, s2, loop_end
+    beq s1, x0, loop_end
+    j loop_continue
 
 max:
-    bge a0, x0, ra # if t0 >= t1 then target
-    add a0, x0
-    jr ra
+    bge a0, x0, else # if a0 >= 0 then target
+    li a0, 0
+    ret
+else:
+    ret
 
 loop_end:
-
-
     # Epilogue
+    lw ra, 12(sp)
+    lw s2, 8(sp)
+    lw s1, 4(sp)
+    lw s0, 0(sp)
+    addi sp, sp, 16
 
-    
 	ret
 
     
+
