@@ -15,19 +15,29 @@ main:
     la s1 vector1
 
     # Set vector attributes
-    
+    li s2 3
+    li s3 1
+    li s4 2
 
+    mv a0 s0
+    mv a1 s1
+    mv a2 s2
+    mv a3 s3
+    mv a4 s4
+    mv a5 s5
 
     # Call dot function
-    
+    jal ra dot
 
 
     # Print integer result
-
-
+    mv s6 a0
+    mv a1 s6
+    jal ra print_int
 
     # Print newline
-
+    li a1 '\n'
+    jal ra print_char
 
 
     # Exit
