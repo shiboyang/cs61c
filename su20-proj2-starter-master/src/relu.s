@@ -1,6 +1,3 @@
-# .import utils.s
-
-
 .globl relu
 
 .text
@@ -40,7 +37,7 @@ relu:
 loop_start:
     bge s1, s2, loop_continue  # s1 >= 1
     li a1, 8 # exit with error code 8
-    j exit2  # j loop_end ????
+    j exit2  # j
 
 loop_continue:
     addi s1, s1, -1
