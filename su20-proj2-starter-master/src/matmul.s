@@ -27,16 +27,8 @@ matmul:
     # Error checks
     bne a2 a4 exit4  # if a2 != a4 exit(4)
 
-    j then:
-
-exit4:
-    li a0 4
-    j exit2
-
-
-then:
     # Prologue
-    addi sp sp -?
+    addi sp sp -40
     sw ra 0(sp)
     sw s0 4(sp)
     sw s1 8(sp)
@@ -61,41 +53,77 @@ then:
 
     j outer_loop_start
 
+exit4:
+    li a0 4
+    j exit2
 
-# for(int i=0; i<rows; ++i){
-#     
-#     for(int j=0; j<cols; ++j){
-#               
-#    }
-#}
 
+# int dot(int*, int*, int length, int stride1, int stride2);
+# void matmul(int* m0, int m0_rows, int m0_cols, int* m1, int m1_rows, int m1_cols, int* d){
+#       for (int i=0; i<m0_rows; ++i){
+#           t0 = m0 + i * m0_cols;
+#           for (int j = 0; j<m1_rows; ++j){
+#               t1 = m1 + j; 
+#               d[i*m0_cols + j] = dot(t0, t1, m0_rows, 1, m1_cols);
+#           }
+#       }            
+# }
 
 outer_loop_start:
-    bge s7 s1 outer_loop_end # if s7 >= rows then outer_loop_end
-    mul t0 s7 a2  # t0 = i * cols 
+    bge s7 s1 outer_loop_end # if i >= m0_rows then outer_loop_end
+    mul t0 s7 s2  # t0 = i * m0_cols 
     slli t0 t0 2  # t0 = t0 * 4
-    add t1 t0   
-    li s8 0
+    add t0 s0 t0  # t0 = arr1 + t0
+
+    li s8 0       # j = 0
 inner_loop_start:
-    bge s8 s5 inner_loop_end
+    bge s8 s5 inner_loop_end  # j >= m1_cols then inner_loop_end
+    slli t1 s8 2  # t1 = j * 4
+    add t1 s3 t1  # t1 = arr2 + t1 
     
+    mv a0 t0  # m0
+    mv a1 t1  # m1
+    mv a2 s2  # length
+    li a3 1   # stride1
+    mv a4 s5  # stride2
 
+    addi sp sp -8
+    sw t0 0(sp)
+    sw t1 4(sp)
 
+    jal ra dot
 
+    lw t0 0(sp)
+    lw t1 4(sp)
+    addi sp sp 8
 
+    mul t2 s7 s2  # t2 = i * m0_cols
+    add t2 t2 s8  # t2 += j
+    slli t2 t2 2  # t2 *= 4
+    add t3 s6 t2  # t3 = d + t2
+    sw a0 0(t3)
 
-
-
+    addi s8 s8 1  # j++
+    j inner_loop_start
 
 inner_loop_end:
-
-
+    addi s7 s7 1  # i++
+    j outer_loop_start
 
 
 outer_loop_end:
 
-
     # Epilogue
-    
+    lw ra 0(sp)
+    lw s0 4(sp)
+    lw s1 8(sp)
+    lw s2 12(sp)
+    lw s3 16(sp)
+    lw s4 20(sp)
+    lw s5 24(sp)
+    lw s6 28(sp)
+    lw s7 32(sp)
+    lw s8 36(sp)    
+    addi sp sp 40
     
     ret
