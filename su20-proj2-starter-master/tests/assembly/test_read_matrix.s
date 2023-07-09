@@ -37,4 +37,4 @@ main:
     mv a0 s3
     jal ra free
     
-    ret
+    jal exit

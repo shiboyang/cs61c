@@ -41,8 +41,8 @@ read_matrix:
     sw s7 32(sp) # the pointer to the matrix
 
     mv s0 a0  # the pointer to filepath
-    mv s1 a1  # the # of rows of address
-    mv s2 a2  # the # of cols of address
+    mv s1 a1  # point to rows 
+    mv s2 a2  # point to cols
 
     # open file
     mv a1 s0
@@ -71,8 +71,9 @@ read_matrix:
     lw t0 0(s1)  # t0 = rows
     lw t1 0(s2)  # t1 = cols
     mul s5 t0 t1 # s5 = rows * cols
-    mv a0 s5
-    jal ra malloc  # ?there is to free?
+    slli t0 s5 2
+    mv a0 t0
+    jal ra malloc
     mv s7 a0     # s7 pointe to the malloced memory
 
     li s6 0
@@ -89,7 +90,15 @@ for:
     j for
 
 for_done:
-    not t0 s5
+    
+    # close file
+    mv a1 s3
+    jal ra fclose
+
+    # set reture value
+    slli t0 s5 2
+    neg t0 t0
+    
     add a0 s7 t0 
 
     # Epilogue
