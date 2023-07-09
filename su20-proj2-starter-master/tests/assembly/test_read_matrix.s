@@ -2,7 +2,8 @@
 .import ../../src/utils.s
 
 .data
-file_path: .asciiz "inputs/test_read_matrix/test_input.bin"
+# file_path: .asciiz "inputs/test_read_matrix/test_input.bin"
+file_path: .asciiz "outputs/test_write_matrix/student_write_outputs.bin"
 
 .text
 main:

@@ -1,5 +1,7 @@
 #define file_r 0
 #define file_w 1
+#define file_a 2
+
 .globl write_matrix
 
 .text
@@ -40,35 +42,51 @@ write_matrix:
     sw s5 28(sp)  # const int 1
     sw s6 32(sp)  # file descriptor
     sw s7 36(sp)  # the index of i
-
+    sw s8 40(sp)  # strore pointer
+    sw s9 44(sp)  # strore pointer
+ 
  
 
     mv s0 a0  # the pointer to filepath
     mv s1 a1  # the pointer to matrix
-    mv s2 s2  # rows
+    mv s2 a2  # rows
     mv s3 a3  # cols
     li s5 -1
 
 
     # open file
     mv a1 s0
-    mv a2 file_w
+    li a2 file_w
     jal ra fopen
     beq a0 s5 exit_53 # if a0 == -1 then: exit_53
     mv s6 a0
 
+    # malloc memory to store rows
+    li a0 4
+    jal ra malloc
+    mv s8 a0
+    sw s2 0(s8)  # *s8 = rows
+
+
     # write the rows into file
     mv a1 s6
-    la a2 s2
+    mv a2 s8
     li a3 1
     li a4 4
     jal ra fwrite
     li t0 1
     bne a0 t0 exit_54
 
+    # malloc memory to store cols
+    li a0 4
+    jal ra malloc
+    mv s8 a0
+    sw s3 0(s9)  # *s9 = cols
+
+
     # write the cols into file
     mv a1 s6
-    la a2 s3
+    mv a2 s9
     li a3 1
     li a4 4
     jal ra fwrite
@@ -92,7 +110,17 @@ for:
     addi s1 s1 4
     j for
 
-forA_done:
+for_done:
+
+    # close file
+    mv a1 s6
+    jal ra fclose
+    
+    # free memory
+    mv a0 s8
+    jal ra free
+    mv a0 s9
+    jal ra free
 
     # Epilogue
     lw ra 0(sp)
