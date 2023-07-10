@@ -15,45 +15,42 @@
 # this function exits with error code 7.
 # =================================================================
 argmax:
+    # arg check
+    li t0 1
+    blt a1, t0, exit_1 # if a1 < t0 then exit_1
+    
 
     # Prologue
-    addi sp, sp, -28
+    addi sp, sp, -24
     sw ra 0(sp)  # sp[0] = ra
     sw s0 4(sp)  # sp[1] = s0
     sw s1 8(sp)  # sp[2] = s1
     sw s2 12(sp) # sp[3] = s2 store the index
-    sw s3 16(sp) # sp[4] = s3 sotre the maximum.
-    sw s4 20(sp) # sp[5] = s4 const int 1
-    sw s5 24(sp) # sp[6] = s5 store current index
+    sw s3 16(sp) # sp[4] = s3 
+    sw s4 20(sp) # sp[5] = s4 
+
 
     mv s0 a0  # s0 = arr
     mv s1 a1  # s1 = length
-    li s2 0   # s2 = 0
-    li s3 0   # s3 = 0
-    li s4 1   # s4 = 1
-    li s5 0   # s5 = 0
+    li s2 0   # i
+    li s3 0   # the index of max value
+    lw s4 0(s0) # the max number
 
 loop_start:
-    bgt s1, s4, loop_continue # if length > 1 then target
-    li a1 7
-    j exit2
+    bge s2 s1 loop_end  # if i >= lenght then: loop_end
+    slli t0 s2 2   # t0 = i * 4
+    add t0 s0 t0  # t0 = arr + t0  
+    lw t0 0(t0)    # arr[i]
 
-loop_continue:
-    addi s1 s1 -1  # length--
-    lw t0 0(s0)       # t0 = *arr
-    bgt s3 t0 then  # if maximum > t0, skip else {index = current_index, maximum = t0}
-    mv s2 s5
-    mv s3 t0
-
-then:
-    beq s1 x0 loop_end # if s0 == x0 then loop_end
-    addi s0 s0 4
-    addi s5 s5 1
-    j loop_continue
-
+    bge s4 t0 skip_update # if t0 >= s3 then skip_update
+    mv s3 s2
+    mv s4 t0
+skip_update:
+    addi s2 s2 1
+    j loop_start
 
 loop_end:
-    mv a0 s2
+    mv a0 s3
     # Epilogue
     lw ra 0(sp)
     lw s0 4(sp)
@@ -61,7 +58,10 @@ loop_end:
     lw s2 12(sp)
     lw s3 16(sp)
     lw s4 20(sp)
-    lw s5 24(sp)
-    addi sp sp 28
+    addi sp sp 24
     
     ret
+
+exit_1:
+    li a1 7
+    j exit2

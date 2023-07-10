@@ -28,7 +28,7 @@ matmul:
     bne a2 a4 exit4  # if a2 != a4 exit(4)
 
     # Prologue
-    addi sp sp -40
+    addi sp sp -48
     sw ra 0(sp)
     sw s0 4(sp)
     sw s1 8(sp)
@@ -39,6 +39,8 @@ matmul:
     sw s6 28(sp)
     sw s7 32(sp)
     sw s8 36(sp)
+    sw s9 40(sp)  # pointer to m0 row data
+    sw s10 44(sp) # pointer to m1 col data
 
 
     mv s0 a0  # s0 = arr1
@@ -73,35 +75,23 @@ outer_loop_start:
     bge s7 s1 outer_loop_end # if i >= m0_rows then outer_loop_end
     mul t0 s7 s2  # t0 = i * m0_cols 
     slli t0 t0 2  # t0 = t0 * 4
-    add t0 s0 t0  # t0 = arr1 + t0
+    add s9 s0 t0  # s9 = arr1 + t0
 
     li s8 0       # j = 0
 inner_loop_start:
     bge s8 s5 inner_loop_end  # j >= m1_cols then inner_loop_end
-    slli t1 s8 2  # t1 = j * 4
-    add t1 s3 t1  # t1 = arr2 + t1 
+    slli t0 s8 2   # t0 = j * 4
+    add s10 s3 t0  # s10 = arr2 + t0
     
-    mv a0 t0  # m0
-    mv a1 t1  # m1
+    mv a0 s9  # m0
+    mv a1 s10  # m1
     mv a2 s2  # length
     li a3 1   # stride1
     mv a4 s5  # stride2
 
-    addi sp sp -8
-    sw t0 0(sp)
-    sw t1 4(sp)
-
     jal ra dot
-
-    lw t0 0(sp)
-    lw t1 4(sp)
-    addi sp sp 8
-
-    mul t2 s7 s2  # t2 = i * m0_cols
-    add t2 t2 s8  # t2 += j
-    slli t2 t2 2  # t2 *= 4
-    add t3 s6 t2  # t3 = d + t2
-    sw a0 0(t3)
+    sw a0 0(s6)
+    addi s6 s6 4
 
     addi s8 s8 1  # j++
     j inner_loop_start
@@ -123,7 +113,9 @@ outer_loop_end:
     lw s5 24(sp)
     lw s6 28(sp)
     lw s7 32(sp)
-    lw s8 36(sp)    
-    addi sp sp 40
+    lw s8 36(sp) 
+    lw s9 40(sp)
+    lw s10 44(sp)   
+    addi sp sp 48
     
     ret

@@ -31,19 +31,18 @@
 write_matrix:
 
     # Prologue
-    addi sp sp -40
+    addi sp sp -44
     sw ra 0(sp)
     sw a0 4(sp)
-    sw s0 8(sp)
-    sw s1 12(sp)
-    sw s2 16(sp)
-    sw s3 20(sp)
-    sw s4 24(sp)  # stroe the # of element
-    sw s5 28(sp)  # const int 1
-    sw s6 32(sp)  # file descriptor
-    sw s7 36(sp)  # the index of i
-    sw s8 40(sp)  # strore pointer
-    sw s9 44(sp)  # strore pointer
+    sw s1 8(sp)
+    sw s2 12(sp)
+    sw s3 16(sp)
+    sw s4 20(sp)  # stroe the # of element
+    sw s5 24(sp)  # const int 1
+    sw s6 28(sp)  # file descriptor
+    sw s7 32(sp)  # the index of i
+    sw s8 36(sp)  # strore pointer
+    sw s9 40(sp)  # strore pointer
  
  
 
@@ -69,10 +68,10 @@ write_matrix:
 
 
     # write the rows into file
-    mv a1 s6
-    mv a2 s8
-    li a3 1
-    li a4 4
+    mv a1 s6  # file descriptor
+    mv a2 s8  # pointer to rows
+    li a3 1   # the # of element
+    li a4 4   # contain byte
     jal ra fwrite
     li t0 1
     bne a0 t0 exit_54
@@ -80,13 +79,13 @@ write_matrix:
     # malloc memory to store cols
     li a0 4
     jal ra malloc
-    mv s8 a0
+    mv s9 a0
     sw s3 0(s9)  # *s9 = cols
 
 
     # write the cols into file
-    mv a1 s6
-    mv a2 s9
+    mv a1 s6  # file descriptor
+    mv a2 s9  # pointer to cols
     li a3 1
     li a4 4
     jal ra fwrite
@@ -94,20 +93,20 @@ write_matrix:
     bne a0 t0 exit_54
 
     # write the data
-    mul s4 s2 s3
+    mul s4 s2 s3  # calculate the # of element
     li s7 0
 for:
     bge s7, s4, for_done # if i >= rows * cols then for_done
-    mv a1 s6
-    mv a2 s1
+    mv a1 s6  # fd
+    mv a2 s1  # pointer
     li a3 1
     li a4 4
     jal ra fwrite
     li t0 1
     bne a0 t0 exit_1
 
-    addi s7 s7 1
-    addi s1 s1 4
+    addi s7 s7 1  # i++
+    addi s1 s1 4  # pointer++
     j for
 
 for_done:
@@ -133,7 +132,8 @@ for_done:
     lw s6 28(sp)
     lw s7 32(sp)
     lw s8 36(sp)
-    addi sp sp 40
+    lw s9 40(sp)
+    addi sp sp 44
 
     ret
 

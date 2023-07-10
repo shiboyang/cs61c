@@ -43,6 +43,7 @@ read_matrix:
     mv s0 a0  # the pointer to filepath
     mv s1 a1  # point to rows 
     mv s2 a2  # point to cols
+    li s4 -1
 
     # open file
     mv a1 s0
