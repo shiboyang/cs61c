@@ -136,6 +136,9 @@
       <a name="facing" val="north"/>
       <a name="labelloc" val="south"/>
     </comp>
+    <comp lib="0" loc="(410,380)" name="Pin">
+      <a name="facing" val="north"/>
+    </comp>
     <comp lib="0" loc="(490,170)" name="Pin">
       <a name="facing" val="west"/>
       <a name="label" val="Out1"/>
@@ -155,6 +158,7 @@
     <wire from="(340,280)" to="(380,280)"/>
     <wire from="(370,320)" to="(370,350)"/>
     <wire from="(370,320)" to="(380,320)"/>
+    <wire from="(410,340)" to="(410,380)"/>
     <wire from="(430,170)" to="(490,170)"/>
     <wire from="(430,190)" to="(450,190)"/>
     <wire from="(440,280)" to="(470,280)"/>
