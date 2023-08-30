@@ -8,8 +8,10 @@
 #if defined(_MSC_VER)
 #include <intrin.h>
 #elif defined(__GNUC__) && (defined(__x86_64__) || defined(__i386__))
+
 #include <immintrin.h>
 #include <x86intrin.h>
+
 #endif
 
 /* Below are some intel intrinsics that might be useful
@@ -60,11 +62,8 @@ void rand_matrix(matrix *result, unsigned int seed, double low, double high) {
 int allocate_matrix(matrix **mat, int rows, int cols) {
     /* TODO: YOUR CODE HERE */
     *mat = (matrix *) malloc(sizeof(struct matrix));
-    **mat = matrix
-    {
-        .row = rows,
+    (*mat)->rows = rows;
 
-    };
 
 
 }

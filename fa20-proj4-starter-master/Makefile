@@ -1,8 +1,8 @@
 CC = gcc
 CFLAGS = -g -Wall -std=c99 -fopenmp -mavx -mfma -pthread
 LDFLAGS = -fopenmp
-CUNIT = -L/home/sparkai/CUnitHome/lib -I/home/sparkai/CUnitHome/include -lcunit
-PYTHON = -I/home/sparkai/miniconda3/envs/numcpy36/include -lpython3.6m
+CUNIT = -L~/CUnitHome/lib -I~/CUnitHome/include -lcunit
+PYTHON = -I~/miniconda3/envs/numcpy36/include -lpython3.6m
 
 install:
 	if [ ! -f files.txt ]; then touch files.txt; fi
