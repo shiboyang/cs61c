@@ -13,10 +13,10 @@ find_library(PYTHON_LIB python3.6m PATHS ~/miniconda3/envs/numcpy36/lib)
 
 include_directories(
         ~/CUnitHome/include
-        /usr/include/python3.10
+        ~/miniconda3/envs/numcpy36/include/python3.6m
 )
 
-link_directories(~/CUnitHome/lib)
+#link_directories(~/CUnitHome/lib)
 
 
 add_executable(test
