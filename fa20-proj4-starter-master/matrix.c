@@ -79,6 +79,13 @@ int allocate_matrix(matrix **mat, int rows, int cols) {
     for (int i = 0; i < rows; ++i) {
         (*mat)->data[i] = malloc(sizeof(double) * cols);
     }
+
+    // initialize data to zero
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            (*mat)->data[i][j] = 0;
+        }
+    }
     return 0;
 }
 
